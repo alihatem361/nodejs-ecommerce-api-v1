@@ -99,3 +99,25 @@ export const updateCategory = asyncHandler(async (req, res) => {
     res.status(404).json({ message: "القسم غير موجود!" });
   }
 });
+
+// ------------------- Delete Category -------------------
+// Method: DELETE
+// Path: /api/v1/categories/:id
+// Access: Public
+// Description: Delete category by ID
+export const deleteCategory = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  // Validate ObjectId
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid category ID" });
+  }
+
+  const category = await CategoryModel.findById(id);
+  if (category) {
+    await CategoryModel.deleteOne({ _id: id });
+    res.status(200).json({ message: "تم حذف القسم بنجاح!" });
+  } else {
+    res.status(404).json({ message: "القسم غير موجود!" });
+  }
+});
