@@ -79,13 +79,13 @@ export const getCategoryById = asyncHandler(async (req, res, next) => {
 // Path: /api/v1/categories/:id
 // Access: Public
 // Description: Update category by ID
-export const updateCategory = asyncHandler(async (req, res) => {
+export const updateCategory = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const { name } = req.body;
 
   // Validate ObjectId
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ message: "Invalid category ID" });
+    return next(new ApiError("رقم القسم غير صحيح", 400));
   }
 
   const category = await CategoryModel.findOneAndUpdate(
@@ -98,7 +98,7 @@ export const updateCategory = asyncHandler(async (req, res) => {
     await category.save();
     res.status(200).json({ message: "تم تحديث القسم بنجاح!" });
   } else {
-    res.status(404).json({ message: "القسم غير موجود!" });
+    return next(new ApiError("Category not found", 404));
   }
 });
 
@@ -107,7 +107,7 @@ export const updateCategory = asyncHandler(async (req, res) => {
 // Path: /api/v1/categories/:id
 // Access: Public
 // Description: Delete category by ID
-export const deleteCategory = asyncHandler(async (req, res) => {
+export const deleteCategory = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
 
   // Validate ObjectId before deleting
