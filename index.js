@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
 import logger from "./middlewares/logger.js";
 
 dotenv.config();
@@ -20,7 +21,7 @@ connectDB();
 
 // Routes
 app.use("/api/v1", userRoutes);
-
+app.use("/api/v1", categoryRoutes);
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
