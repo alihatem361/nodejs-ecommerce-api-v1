@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import CategoryModel from "../models/categoryModel.js";
 import slugify from "slugify";
 import asyncHandler from "express-async-handler";
@@ -47,15 +48,53 @@ export const getCategories = asyncHandler(async (req, res) => {
     data: categories,
   });
 });
+
 // ------------------- Get Category By ID -------------------
 // Method: GET
 // Path: /api/v1/categories/:id
 // Access: Public
 // Description: Get category by ID
 export const getCategoryById = asyncHandler(async (req, res) => {
-  const category = await CategoryModel.findById(req.params.id);
+  const { id } = req.params;
+
+  // Validate ObjectId
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid category ID" });
+  }
+
+  const category = await CategoryModel.findById(id).select("-__v");
   if (category) {
-    res.status(200).json(category);
+    res.status(200).json({
+      data: category,
+    });
+  } else {
+    res.status(404).json({ message: "القسم غير موجود!" });
+  }
+});
+
+// ------------------- Update Category -------------------
+// Method: PUT
+// Path: /api/v1/categories/:id
+// Access: Public
+// Description: Update category by ID
+export const updateCategory = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+
+  // Validate ObjectId
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid category ID" });
+  }
+
+  const category = await CategoryModel.findOneAndUpdate(
+    { _id: id },
+    { name, slug: slugify(name) },
+    { new: true }
+  );
+
+  if (category) {
+    await category.save();
+    res.status(200).json({ message: "تم تحديث القسم بنجاح!" });
   } else {
     res.status(404).json({ message: "القسم غير موجود!" });
   }
