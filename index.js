@@ -23,6 +23,10 @@ connectDB();
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", categoryRoutes);
 
+app.all("*", (req, res, next) => {
+  const error = new Error(`Route not found - ${req.originalUrl}`);
+  next(error);
+});
 // Error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
