@@ -22,6 +22,12 @@ connectDB();
 // Routes
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", categoryRoutes);
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: err.message });
+});
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });

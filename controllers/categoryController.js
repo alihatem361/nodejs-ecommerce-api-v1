@@ -109,9 +109,9 @@ export const deleteCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   // Validate ObjectId
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ message: "Invalid category ID" });
-  }
+  //   if (!mongoose.Types.ObjectId.isValid(id)) {
+  //     return res.status(400).json({ message: "Invalid category ID" });
+  //   }
 
   const category = await CategoryModel.findById(id);
   if (category) {
