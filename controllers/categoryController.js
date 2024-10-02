@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import CategoryModel from "../models/categoryModel.js";
 import slugify from "slugify";
 import asyncHandler from "express-async-handler";
-
+import ApiError from "../utils/ApiError.js";
 // ------------------- Create Category -------------------
 // Method: POST
 // Path: /api/v1/categories
@@ -54,12 +54,13 @@ export const getCategories = asyncHandler(async (req, res) => {
 // Path: /api/v1/categories/:id
 // Access: Public
 // Description: Get category by ID
-export const getCategoryById = asyncHandler(async (req, res) => {
+export const getCategoryById = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
 
   // Validate ObjectId
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ message: "Invalid category ID" });
+    // use ApiError class to handle errors
+    return next(new ApiError("Invalid category ID", 400));
   }
 
   const category = await CategoryModel.findById(id).select("-__v");
@@ -68,7 +69,8 @@ export const getCategoryById = asyncHandler(async (req, res) => {
       data: category,
     });
   } else {
-    res.status(404).json({ message: "القسم غير موجود!" });
+    // use ApiError class to handle errors
+    return next(new ApiError("Category not found", 404));
   }
 });
 
@@ -108,10 +110,10 @@ export const updateCategory = asyncHandler(async (req, res) => {
 export const deleteCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  // Validate ObjectId
-  //   if (!mongoose.Types.ObjectId.isValid(id)) {
-  //     return res.status(400).json({ message: "Invalid category ID" });
-  //   }
+  // Validate ObjectId before deleting
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return next(new ApiError("Invalid category ID", 400));
+  }
 
   const category = await CategoryModel.findById(id);
   if (category) {
