@@ -32,6 +32,13 @@ app.all("*", (req, res, next) => {
 // @desc    Error handler middleware
 app.use(errorHandler);
 
+// handle unhandled promise rejections
+process.on("unhandledRejection", (err, promise) => {
+  console.log(`Error: ${err.message}`);
+  // close server & exit process
+  server.close(() => process.exit(1));
+});
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });

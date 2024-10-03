@@ -1,4 +1,5 @@
 import express from "express";
+import getCategoryValidator from "../utils/Validatore/validateCategoryId.js";
 import {
   createCategory,
   getCategories,
@@ -11,7 +12,8 @@ const router = express.Router();
 
 router.post("/categories", createCategory);
 router.get("/categories", getCategories);
-router.get("/categories/:id", getCategoryById);
+
+router.get("/categories/:id", getCategoryValidator, getCategoryById);
 router.put("/categories/:id", updateCategory);
 router.delete("/categories/:id", deleteCategory);
 
