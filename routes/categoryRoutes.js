@@ -1,5 +1,10 @@
 import express from "express";
-import getCategoryValidator from "../utils/Validatore/validateCategoryId.js";
+import {
+  getCategoryValidator,
+  createCategoryValidator,
+  deleteCategoryValidator,
+  updateCategoryValidator,
+} from "../utils/Validatore/validateCategoryId.js";
 import {
   createCategory,
   getCategories,
@@ -10,15 +15,11 @@ import {
 
 const router = express.Router();
 
-router.post("/categories", createCategory);
+router.post("/categories", createCategoryValidator, createCategory);
 router.get("/categories", getCategories);
 
 router.get("/categories/:id", getCategoryValidator, getCategoryById);
-router.put("/categories/:id", updateCategory);
-router.delete("/categories/:id", deleteCategory);
-
-// طريقة اخرى للتصدير والاستيراد للدوال تلخص الكود السابق
-// router.route("/categories").post(createCategory).get(getCategories);
-// router.route("/categories/:id").get(getCategoryById).put(updateCategory).delete(deleteCategory);
+router.put("/categories/:id", updateCategoryValidator, updateCategory);
+router.delete("/categories/:id", deleteCategoryValidator, deleteCategory);
 
 export default router;

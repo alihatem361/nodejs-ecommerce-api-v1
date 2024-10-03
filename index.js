@@ -10,7 +10,7 @@ import errorHandler from "./middlewares/errorMiddleware.js";
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3028;
 
 // Middleware
 app.use(morgan("dev"));
