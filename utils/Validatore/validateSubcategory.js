@@ -4,7 +4,7 @@ import validatorMiddleware from "../../middlewares/validatorMiddleware.js";
 // ------------------ createSubcategoryValidator ------------------
 export const createSubcategoryValidator = [
   check("name").notEmpty().isLength({ min: 3 }).withMessage("Name is required"),
-  check("categoryId").isMongoId().withMessage("Invalid category id"),
+  check("categoryId").notEmpty().isMongoId().withMessage("Invalid category id"),
   validatorMiddleware,
 ];
 
