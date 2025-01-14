@@ -7,17 +7,29 @@ import {
   deleteSubcategory,
   getSubcategoriesByCategoryId,
 } from "../controllers/subcategoryController.js";
+import {
+  createSubcategoryValidator,
+  getSubcategoryValidator,
+  updateSubcategoryValidator,
+  deleteSubcategoryValidator,
+  getSubcategoriesByCategoryIdValidator,
+} from "../utils/Validatore/validateSubcategory.js";
 
 const router = express.Router();
 
-router.route("/").post(createSubcategory).get(getAllSubcategories);
+router
+  .route("/")
+  .post(createSubcategoryValidator, createSubcategory)
+  .get(getAllSubcategories);
 
-router.route("/category/:categoryId").get(getSubcategoriesByCategoryId);
+router
+  .route("/category/:categoryId")
+  .get(getSubcategoriesByCategoryIdValidator, getSubcategoriesByCategoryId);
 
 router
   .route("/:id")
-  .get(getSubcategoryById)
-  .patch(updateSubcategory)
-  .delete(deleteSubcategory);
+  .get(getSubcategoryValidator, getSubcategoryById)
+  .patch(updateSubcategoryValidator, updateSubcategory)
+  .delete(deleteSubcategoryValidator, deleteSubcategory);
 
 export default router;

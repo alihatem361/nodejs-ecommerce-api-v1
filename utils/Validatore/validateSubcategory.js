@@ -1,0 +1,37 @@
+import { param, check } from "express-validator";
+import validatorMiddleware from "../../middlewares/validatorMiddleware.js";
+
+// ------------------ createSubcategoryValidator ------------------
+export const createSubcategoryValidator = [
+  check("name").notEmpty().isLength({ min: 3 }).withMessage("Name is required"),
+  check("categoryId").isMongoId().withMessage("Invalid category id"),
+  validatorMiddleware,
+];
+
+// ------------------ getSubcategoryValidator ------------------
+export const getSubcategoryValidator = [
+  param("id").isMongoId().withMessage("Invalid subcategory id"),
+  validatorMiddleware,
+];
+
+// ------------------ getSubcategoriesByCategoryIdValidator ------------------
+export const getSubcategoriesByCategoryIdValidator = [
+  param("categoryId").isMongoId().withMessage("Invalid category id"),
+  validatorMiddleware,
+];
+
+// ------------------ updateSubcategoryValidator ------------------
+export const updateSubcategoryValidator = [
+  param("id").isMongoId().withMessage("Invalid subcategory id"),
+  check("name")
+    .optional()
+    .isLength({ min: 3 })
+    .withMessage("Name must be at least 3 characters long"),
+  validatorMiddleware,
+];
+
+// ------------------ deleteSubcategoryValidator ------------------
+export const deleteSubcategoryValidator = [
+  param("id").isMongoId().withMessage("Invalid subcategory id"),
+  validatorMiddleware,
+];

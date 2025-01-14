@@ -65,14 +65,6 @@ export const getAllSubcategories = async (req, res) => {
 // Access: Public
 // Description: Get all subcategories by category ID
 export const getSubcategoriesByCategoryId = async (req, res) => {
-  console.log(req.params.categoryId);
-  if (!mongoose.Types.ObjectId.isValid(req.params.categoryId)) {
-    return res.status(400).json({
-      status: "fail",
-      message: "Invalid categoryId",
-    });
-  }
-
   try {
     const subcategories = await SubcategoryModel.find({
       categoryId: req.params.categoryId,
