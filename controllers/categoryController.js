@@ -3,6 +3,7 @@ import CategoryModel from "../models/categoryModel.js";
 import slugify from "slugify";
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
+
 // ------------------- Create Category -------------------
 // Method: POST
 // Path: /api/v1/categories
