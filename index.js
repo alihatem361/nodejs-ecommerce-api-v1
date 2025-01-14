@@ -4,6 +4,7 @@ import morgan from "morgan";
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
+import subcategoryRoutes from "./routes/subcategoryRouter.js"; // Add this line
 import logger from "./middlewares/logger.js";
 import ApiError from "./utils/ApiError.js";
 import errorHandler from "./middlewares/errorMiddleware.js";
@@ -23,7 +24,8 @@ connectDB();
 // Routes
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", categoryRoutes);
-
+// subcategoryRoutes
+app.use("/api/v1/subcategories", subcategoryRoutes);
 // @desc    Route not found handler
 app.all("*", (req, res, next) => {
   next(new ApiError(`Can't find ${req.originalUrl} on this server!`, 404));

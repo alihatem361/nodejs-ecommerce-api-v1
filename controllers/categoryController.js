@@ -15,7 +15,9 @@ export const createCategory = asyncHandler(async (req, res) => {
 
   try {
     await newCategory.save();
-    res.status(201).json({ message: "تم إنشاء القسم بنجاح!" });
+    res
+      .status(201)
+      .json({ message: "تم إنشاء القسم بنجاح!", data: newCategory });
   } catch (error) {
     if (error.code === 11000) {
       res.status(400).json({ message: "هذا القسم موجود بالفعل!" });

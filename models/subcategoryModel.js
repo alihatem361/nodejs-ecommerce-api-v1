@@ -15,7 +15,9 @@ const subcategorySchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
     },
-    category: {
+    // define a relationship between the subcategory and category
+    // اضف علاقة بين الفئة الفرعية والفئة
+    categoryId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
       required: [true, "Please provide a category ID"],
