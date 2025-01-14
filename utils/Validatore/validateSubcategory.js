@@ -3,8 +3,12 @@ import validatorMiddleware from "../../middlewares/validatorMiddleware.js";
 
 // ------------------ createSubcategoryValidator ------------------
 export const createSubcategoryValidator = [
-  check("name").notEmpty().isLength({ min: 3 }).withMessage("Name is required"),
-  check("categoryId").notEmpty().isMongoId().withMessage("Invalid category id"),
+  check("name")
+    .notEmpty()
+    .withMessage("Name is required")
+    .isLength({ min: 3 })
+    .withMessage("Name must be at least 3 characters long"),
+  check("categoryId").notEmpty().withMessage("Category id is required"),
   validatorMiddleware,
 ];
 
