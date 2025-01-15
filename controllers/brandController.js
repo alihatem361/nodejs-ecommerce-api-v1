@@ -96,7 +96,9 @@ export const updateBrand = asyncHandler(async (req, res, next) => {
 
   if (brand) {
     await brand.save();
-    res.status(200).json({ message: "تم تحديث العلامة التجارية بنجاح!" });
+    res
+      .status(200)
+      .json({ message: "تم تحديث العلامة التجارية بنجاح!", data: brand });
   } else {
     return next(new ApiError("Brand not found", 404));
   }
