@@ -2,12 +2,15 @@ import express from "express";
 import dotenv from "dotenv";
 import morgan from "morgan";
 import connectDB from "./config/db.js";
-import userRoutes from "./routes/userRoutes.js";
-import categoryRoutes from "./routes/categoryRoutes.js";
-import subcategoryRoutes from "./routes/subcategoryRouter.js"; // Add this line
 import logger from "./middlewares/logger.js";
 import ApiError from "./utils/ApiError.js";
 import errorHandler from "./middlewares/errorMiddleware.js";
+
+// Routes
+import userRoutes from "./routes/userRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
+import subcategoryRoutes from "./routes/subcategoryRouter.js";
+import brandRoutes from "./routes/brandRoutes.js";
 dotenv.config();
 
 const app = express();
@@ -30,8 +33,9 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", categoryRoutes);
-// subcategoryRoutes
 app.use("/api/v1/subcategories", subcategoryRoutes);
+app.use("/api/v1", brandRoutes);
+
 // @desc    Route not found handler
 app.all("*", (req, res, next) => {
   next(new ApiError(`Can't find ${req.originalUrl} on this server!`, 404));
