@@ -1,7 +1,7 @@
 import SubcategoryModel from "../models/subcategoryModel.js";
 import slugify from "slugify";
-import mongoose from "mongoose";
 import asyncHandler from "express-async-handler";
+import ApiError from "../utils/ApiError.js"; // Import ApiError
 
 // ------------------- Create Category -------------------
 // Method: POST
@@ -47,16 +47,27 @@ export const getAllSubcategories = asyncHandler(async (req, res, next) => {
   });
 });
 
-// ------------------- Get Subcategories By Category ID -------------------
+// ------------------- Get Subcategories By Category ID / Nested Routes -------------------
 // Method: GET
 // Path: /api/v1/subcategories/category/:categoryId
 // Access: Public
 // Description: Get all subcategories by category ID
 export const getSubcategoriesByCategoryId = asyncHandler(
   async (req, res, next) => {
+    const page = parseInt(req.query.page) || 1; // Default to page 1 if not specified
+    const limit = parseInt(req.query.limit) || 10; // Default to 10 items per page if not specified
+    const skip = (page - 1) * limit;
+
     const subcategories = await SubcategoryModel.find({
       categoryId: req.params.categoryId,
-    }).select("-__v");
+    })
+      .select("-__v")
+      .skip(skip)
+      .limit(limit);
+
+    if (subcategories.length === 0) {
+      return next(new ApiError("Subcategories not found", 404)); // Error handling
+    }
     res.status(200).json({
       status: "success",
       results: subcategories.length,
@@ -77,10 +88,7 @@ export const getSubcategoryById = asyncHandler(async (req, res, next) => {
     "-__v"
   );
   if (!subcategory) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Subcategory not found",
-    });
+    return next(new ApiError("Subcategory not found", 404)); // Error handling
   }
   res.status(200).json({
     status: "success",
@@ -95,7 +103,7 @@ export const getSubcategoryById = asyncHandler(async (req, res, next) => {
 // Path: /api/v1/subcategories/:id
 // Access: Public
 // Description: Update subcategory by ID
-export const updateSubcategory = asyncHandler(async (req, res) => {
+export const updateSubcategory = asyncHandler(async (req, res, next) => {
   console.log(req.body);
   console.log(req.params);
   const subcategory = await SubcategoryModel.findByIdAndUpdate(
@@ -111,10 +119,7 @@ export const updateSubcategory = asyncHandler(async (req, res) => {
     }
   );
   if (!subcategory) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Subcategory not found",
-    });
+    return next(new ApiError("Subcategory not found", 404)); // Error handling
   }
   res.status(200).json({
     status: "success",
@@ -132,10 +137,7 @@ export const updateSubcategory = asyncHandler(async (req, res) => {
 export const deleteSubcategory = asyncHandler(async (req, res, next) => {
   const subcategory = await SubcategoryModel.findByIdAndDelete(req.params.id);
   if (!subcategory) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Subcategory not found",
-    });
+    return next(new ApiError("Subcategory not found", 404)); // Error handling
   }
   res.status(200).json({
     massage: "Subcategory deleted successfully",
