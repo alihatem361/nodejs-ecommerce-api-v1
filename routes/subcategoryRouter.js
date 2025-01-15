@@ -15,7 +15,9 @@ import {
   getSubcategoriesByCategoryIdValidator,
 } from "../utils/Validatore/validateSubcategory.js";
 
-const router = express.Router();
+// ال mergeParams: true يسمح لنا بالوصول إلى الوسائط المتغيرة في الطرق الفرعية
+// mergeParams: true allows us to access the route parameters in the sub-routes
+const router = express.Router({ mergeParams: true });
 
 router
   .route("/")
