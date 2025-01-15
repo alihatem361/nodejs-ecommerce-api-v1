@@ -22,6 +22,12 @@ app.use(logger);
 connectDB();
 
 // Routes
+app.get("/", (req, res) => {
+  res.json({
+    message: "Welcome to our e-commerce API",
+  }); // Add semicolon here
+});
+
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", categoryRoutes);
 // subcategoryRoutes
