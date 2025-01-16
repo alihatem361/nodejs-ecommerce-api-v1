@@ -40,6 +40,10 @@ export const getProducts = asyncHandler(async (req, res) => {
   excludeFields.forEach((el) => delete queryObj[el]);
 
   // Advanced filtering
+  //   فايدة الجزء ده:
+  // تحويل Query Parameters لشيء مفهوم ومقبول من MongoDB.
+  // تسهيل عمليات الفلترة بناءً على قيم معينة (زي السعر، التاريخ... إلخ).
+  // جعل الكود ديناميكي، بحيث يدعم شروط فلترة متعددة زي (gte, lte, gt, lt) بسهولة. 💪
   let queryStr = JSON.stringify(queryObj);
   queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
