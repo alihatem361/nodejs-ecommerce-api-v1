@@ -35,7 +35,8 @@ const destroyData = async () => {
   }
 };
 
-// node seeder.js -d
+// node seeder.js -d to delete data from DB
+// node seeder.js -i to insert data into DB
 if (process.argv[2] === "-i") {
   insertData();
 } else if (process.argv[2] === "-d") {
