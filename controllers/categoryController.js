@@ -70,7 +70,7 @@ export const getCategoryById = asyncHandler(async (req, res, next) => {
   // get subcategories by category ID
   const subcategories = await SubcategoryModel.find({
     categoryId: id,
-  }).select("-__v");
+  }).select("_id");
   const category = await CategoryModel.findById(id).select("-__v");
 
   if (category) {
