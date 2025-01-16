@@ -49,6 +49,11 @@ export const getProducts = asyncHandler(async (req, res) => {
       { title: { $regex: req.query.search, $options: "i" } },
       { description: { $regex: req.query.search, $options: "i" } },
     ];
+
+    // find
+    delete queryObj.search;
+    queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
   }
 
   // Sorting logic
