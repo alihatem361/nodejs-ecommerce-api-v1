@@ -29,16 +29,29 @@ export const createProduct = asyncHandler(async (req, res, next) => {
 // Access: Public
 // Description: Get all products with pagination
 export const getProducts = asyncHandler(async (req, res) => {
+  // Pagination logic
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const skip = (page - 1) * limit;
 
-  const products = await ProductModel.find()
+  // Filtering logic
+  const queryObj = { ...req.query };
+  const excludeFields = ["page", "sort", "limit", "fields"];
+  excludeFields.forEach((el) => delete queryObj[el]);
+
+  // Advanced filtering
+  let queryStr = JSON.stringify(queryObj);
+  queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
+  // Query execution
+  const query = ProductModel.find(JSON.parse(queryStr))
     .select("-__v")
     .skip(skip)
     .limit(limit)
     .populate("category", "name -_id");
-  const totalProducts = await ProductModel.countDocuments();
+
+  const products = await query;
+  const totalProducts = await ProductModel.countDocuments(JSON.parse(queryStr));
 
   res.status(200).json({
     result: products.length,
