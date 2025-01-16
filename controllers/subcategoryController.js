@@ -1,4 +1,4 @@
-import SubcategoryModel from "../models/subcategoryModel.js";
+import SubcategoryModel from "../models/subCategoryModel.js";
 import slugify from "slugify";
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js"; // Import ApiError

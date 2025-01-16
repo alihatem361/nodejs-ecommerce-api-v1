@@ -1,7 +1,7 @@
 import { param, check } from "express-validator";
 import validatorMiddleware from "../../middlewares/validatorMiddleware.js";
-const Category = require("../../models/categoryModel");
-const SubCategory = require("../../models/subCategoryModel");
+import Category from "../../models/categoryModel.js";
+import SubCategory from "../../models/subCategoryModel.js";
 
 // ------------------ createProductValidator ------------------
 export const createProductValidator = [
@@ -9,11 +9,7 @@ export const createProductValidator = [
     .isLength({ min: 3 })
     .withMessage("must be at least 3 chars")
     .notEmpty()
-    .withMessage("Product required")
-    .custom((val, { req }) => {
-      req.body.slug = slugify(val);
-      return true;
-    }),
+    .withMessage("Product required"),
   check("description")
     .notEmpty()
     .withMessage("Product description is required")

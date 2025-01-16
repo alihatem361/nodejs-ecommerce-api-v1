@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon index.js",
-    "start": "nodemon your-entry-file.js"
+    "start": "nodemon index.js"
   },
   "keywords": [],
   "author": "",

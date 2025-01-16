@@ -36,7 +36,8 @@ export const getProducts = asyncHandler(async (req, res) => {
   const products = await ProductModel.find()
     .select("-__v")
     .skip(skip)
-    .limit(limit);
+    .limit(limit)
+    .populate("category", "name -_id");
   const totalProducts = await ProductModel.countDocuments();
 
   res.status(200).json({
@@ -60,7 +61,9 @@ export const getProductById = asyncHandler(async (req, res, next) => {
     return next(new ApiError("Invalid product ID", 400));
   }
 
-  const product = await ProductModel.findById(id).select("-__v");
+  const product = await ProductModel.findById(id)
+    .select("-__v")
+    .populate("category", "name -_id");
   if (product) {
     res.status(200).json({ data: product });
   } else {
@@ -75,26 +78,14 @@ export const getProductById = asyncHandler(async (req, res, next) => {
 // Description: Update product by ID
 export const updateProduct = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  const { title, description, quantity, price, category, imageCover } =
-    req.body;
-
+  if (req.body.title) {
+    req.body.slug = slugify(req.body.title);
+  }
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return next(new ApiError("Invalid product ID", 400));
   }
 
-  const product = await ProductModel.findOneAndUpdate(
-    { _id: id },
-    {
-      title,
-      slug: slugify(title),
-      description,
-      quantity,
-      price,
-      category,
-      imageCover,
-    },
-    { new: true }
-  );
+  const product = await ProductModel.findOneAndUpdate({ _id: id }, req.body);
 
   if (product) {
     await product.save();

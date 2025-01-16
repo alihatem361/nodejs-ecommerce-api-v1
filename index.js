@@ -11,6 +11,7 @@ import userRoutes from "./routes/userRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import subcategoryRoutes from "./routes/subcategoryRouter.js";
 import brandRoutes from "./routes/brandRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
 dotenv.config();
 
 const app = express();
@@ -35,6 +36,7 @@ app.use("/api/v1", userRoutes);
 app.use("/api/v1", categoryRoutes);
 app.use("/api/v1/subcategories", subcategoryRoutes);
 app.use("/api/v1", brandRoutes);
+app.use("/api/v1", productRoutes);
 
 // @desc    Route not found handler
 app.all("*", (req, res, next) => {
