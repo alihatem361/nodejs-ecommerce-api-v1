@@ -36,12 +36,20 @@ export const getProducts = asyncHandler(async (req, res) => {
 
   // Filtering logic
   const queryObj = { ...req.query };
-  const excludeFields = ["page", "sort", "limit", "fields"];
+  const excludeFields = ["page", "sort", "limit", "fields", "search"];
   excludeFields.forEach((el) => delete queryObj[el]);
 
   // Advanced filtering
   let queryStr = JSON.stringify(queryObj);
   queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
+  // Search logic
+  if (req.query.search) {
+    queryObj.$or = [
+      { title: { $regex: req.query.search, $options: "i" } },
+      { description: { $regex: req.query.search, $options: "i" } },
+    ];
+  }
 
   // Sorting logic
   let sortBy = "-createdAt"; // Default sort by createdAt descending
