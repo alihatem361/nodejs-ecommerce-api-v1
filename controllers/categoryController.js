@@ -4,6 +4,7 @@ import slugify from "slugify";
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
 
+import SubcategoryModel from "../models/subCategoryModel.js";
 // ------------------- Create Category -------------------
 // Method: POST
 // Path: /api/v1/categories
@@ -66,10 +67,18 @@ export const getCategoryById = asyncHandler(async (req, res, next) => {
     return next(new ApiError("Invalid category ID", 400));
   }
 
+  // get subcategories by category ID
+  const subcategories = await SubcategoryModel.find({
+    categoryId: id,
+  }).select("-__v");
   const category = await CategoryModel.findById(id).select("-__v");
+
   if (category) {
     res.status(200).json({
-      data: category,
+      data: {
+        category,
+        subcategories,
+      },
     });
   } else {
     // use ApiError class to handle errors

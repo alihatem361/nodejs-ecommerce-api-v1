@@ -81,7 +81,7 @@ export const createProductValidator = [
       )
     )
     .custom((val, { req }) =>
-      SubCategory.find({ category: req.body.category }).then(
+      SubCategory.find({ categoryId: req.body.category }).then(
         (subcategories) => {
           const subCategoriesIdsInDB = [];
           subcategories.forEach((subCategory) => {
