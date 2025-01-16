@@ -3,7 +3,7 @@ import ProductModel from "../models/productModel.js";
 import slugify from "slugify";
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
-
+import ApiFeatures from "../utils/apiFeatures.js";
 // ------------------- Create Product -------------------
 // Method: POST
 // Path: /api/v1/products
@@ -29,61 +29,18 @@ export const createProduct = asyncHandler(async (req, res, next) => {
 // Access: Public
 // Description: Get all products with pagination
 export const getProducts = asyncHandler(async (req, res) => {
-  // Pagination logic
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const skip = (page - 1) * limit;
+  const apiFeatures = new ApiFeatures(ProductModel.find(), req.query)
+    .filter()
+    .search()
+    .sort()
+    .limitFields()
+    .paginate();
 
-  // Filtering logic
-  const queryObj = { ...req.query };
-  const excludeFields = ["page", "sort", "limit", "fields", "search"];
-  excludeFields.forEach((el) => delete queryObj[el]);
-
-  // Advanced filtering
-  let queryStr = JSON.stringify(queryObj);
-  queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-
-  // Search logic
-  if (req.query.search) {
-    queryObj.$or = [
-      { title: { $regex: req.query.search, $options: "i" } },
-      { description: { $regex: req.query.search, $options: "i" } },
-    ];
-
-    // find
-    delete queryObj.search;
-    queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-  }
-
-  // Sorting logic
-  let sortBy = "-createdAt"; // Default sort by createdAt descending
-  if (req.query.sort) {
-    sortBy = req.query.sort.split(",").join(" ");
-  }
-
-  // Fields selection logic
-  let fields = "-__v"; // Default exclude __v
-  if (req.query.fields) {
-    fields = req.query.fields.split(",").join(" ");
-  }
-
-  // Query execution
-  const query = ProductModel.find(JSON.parse(queryStr))
-    .select(fields)
-    .skip(skip)
-    .limit(limit)
-    .sort(sortBy)
-    .populate("category", "name -_id");
-
-  const products = await query;
-  const totalProducts = await ProductModel.countDocuments(JSON.parse(queryStr));
-
+  const products = await apiFeatures.mongooseQuery;
   res.status(200).json({
     result: products.length,
-    total: totalProducts,
-    page,
-    pages: Math.ceil(totalProducts / limit),
+    paginationResult: apiFeatures.paginationResult,
+    total: await ProductModel.countDocuments(),
     data: products,
   });
 });
