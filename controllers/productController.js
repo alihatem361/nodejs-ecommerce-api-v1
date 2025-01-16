@@ -49,9 +49,15 @@ export const getProducts = asyncHandler(async (req, res) => {
     sortBy = req.query.sort.split(",").join(" ");
   }
 
+  // Fields selection logic
+  let fields = "-__v"; // Default exclude __v
+  if (req.query.fields) {
+    fields = req.query.fields.split(",").join(" ");
+  }
+
   // Query execution
   const query = ProductModel.find(JSON.parse(queryStr))
-    .select("-__v")
+    .select(fields)
     .skip(skip)
     .limit(limit)
     .sort(sortBy)
