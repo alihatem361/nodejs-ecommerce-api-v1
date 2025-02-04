@@ -3,6 +3,7 @@ import BrandModel from "../models/brandModel.js";
 import slugify from "slugify";
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
+import ApiFeatures from "../utils/apiFeatures.js";
 
 // ------------------- Create Brand -------------------
 // Method: POST
@@ -33,18 +34,20 @@ export const createBrand = asyncHandler(async (req, res) => {
 // Access: Public
 // Description: Get all brands with pagination
 export const getBrands = asyncHandler(async (req, res) => {
-  const page = parseInt(req.query.page) || 1; // Default to page 1 if not specified
-  const limit = parseInt(req.query.limit) || 10; // Default to 10 items per page if not specified
-  const skip = (page - 1) * limit;
+  // number of documents
+  const numberOfDocuments = await BrandModel.countDocuments();
+  const apiFeatures = new ApiFeatures(BrandModel.find(), req.query)
+    .filter()
+    .search()
+    .sort()
+    .limitFields()
+    .paginate(numberOfDocuments);
 
-  const brands = await BrandModel.find().select("-__v").skip(skip).limit(limit);
-  const totalBrands = await BrandModel.countDocuments();
-
+  const brands = await apiFeatures.mongooseQuery;
   res.status(200).json({
     result: brands.length,
-    total: totalBrands,
-    page,
-    pages: Math.ceil(totalBrands / limit),
+    paginationResult: apiFeatures.paginationResult,
+    total: numberOfDocuments,
     data: brands,
   });
 });

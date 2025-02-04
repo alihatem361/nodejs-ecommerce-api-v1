@@ -29,18 +29,19 @@ export const createProduct = asyncHandler(async (req, res, next) => {
 // Access: Public
 // Description: Get all products with pagination
 export const getProducts = asyncHandler(async (req, res) => {
+  const numberOfDocuments = await ProductModel.countDocuments();
   const apiFeatures = new ApiFeatures(ProductModel.find(), req.query)
     .filter()
     .search()
     .sort()
     .limitFields()
-    .paginate();
+    .paginate(numberOfDocuments);
 
   const products = await apiFeatures.mongooseQuery;
   res.status(200).json({
     result: products.length,
     paginationResult: apiFeatures.paginationResult,
-    total: await ProductModel.countDocuments(),
+    total: numberOfDocuments,
     data: products,
   });
 });
