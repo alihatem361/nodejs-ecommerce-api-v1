@@ -2,7 +2,7 @@ import SubcategoryModel from "../models/subCategoryModel.js";
 import slugify from "slugify";
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js"; // Import ApiError
-
+import ApiFeatures from "../utils/apiFeatures.js"; // Import ApiFeatures
 // ------------------- Create Category -------------------
 // Method: POST
 // Path: /api/v1/subcategories
@@ -27,23 +27,20 @@ export const createSubcategory = asyncHandler(async (req, res, next) => {
 // Access: Public
 // Description: Get all subcategories
 export const getAllSubcategories = asyncHandler(async (req, res, next) => {
-  const page = parseInt(req.query.page) || 1; // Default to page 1 if not specified
-  const limit = parseInt(req.query.limit) || 10; // Default to 10 items per page if not specified
-  const skip = (page - 1) * limit;
-  const subcategories = await SubcategoryModel.find()
-    .select("-__v")
-    .skip(skip)
-    .limit(limit)
-    .populate("categoryId", "name -_id");
+  const numberOfDocuments = await SubcategoryModel.countDocuments();
+  const apiFeatures = new ApiFeatures(SubcategoryModel.find(), req.query)
+    .filter()
+    .search()
+    .sort()
+    .limitFields()
+    .paginate(numberOfDocuments);
 
+  const subcategories = await apiFeatures.mongooseQuery;
   res.status(200).json({
-    status: "تمت العملية بنجاح",
-    total: await SubcategoryModel.countDocuments(),
-    results: subcategories.length,
-    page,
-    data: {
-      subcategories,
-    },
+    result: subcategories.length,
+    paginationResult: apiFeatures.paginationResult,
+    total: numberOfDocuments,
+    data: subcategories,
   });
 });
 
