@@ -18,13 +18,9 @@ export const deleteOne = (Model) =>
 
 export const updateOne = (Model) =>
   asyncHandler(async (req, res, next) => {
-    const document = await DocumentModel.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-      }
-    );
+    const document = await Model.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    }).select("-__v");
 
     if (document) {
       await document.save();

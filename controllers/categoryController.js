@@ -4,7 +4,7 @@ import slugify from "slugify";
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
 import ApiFeatures from "../utils/apiFeatures.js";
-import { deleteOne } from "./handlersFactory.js"; // Updated import
+import { deleteOne, updateOne } from "./handlersFactory.js"; // Updated import
 
 import SubcategoryModel from "../models/subCategoryModel.js";
 // ------------------- Create Category -------------------
@@ -92,28 +92,7 @@ export const getCategoryById = asyncHandler(async (req, res, next) => {
 // Path: /api/v1/categories/:id
 // Access: Public
 // Description: Update category by ID
-export const updateCategory = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-  const { name } = req.body;
-
-  // Validate ObjectId
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return next(new ApiError("رقم القسم غير صحيح", 400));
-  }
-
-  const category = await CategoryModel.findOneAndUpdate(
-    { _id: id },
-    { name, slug: slugify(name) },
-    { new: true }
-  );
-
-  if (category) {
-    await category.save();
-    res.status(200).json({ message: "تم تحديث القسم بنجاح!" });
-  } else {
-    return next(new ApiError("Category not found", 404));
-  }
-});
+export const updateCategory = updateOne(CategoryModel); // Updated
 
 // ------------------- Delete Category -------------------
 // Method: DELETE
