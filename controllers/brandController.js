@@ -4,7 +4,7 @@ import slugify from "slugify";
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
 import ApiFeatures from "../utils/apiFeatures.js";
-import { deleteOne } from "./handlersFactory.js"; // Updated import
+import { deleteOne, updateOne } from "./handlersFactory.js"; // Updated import
 
 // ------------------- Create Brand -------------------
 // Method: POST
@@ -83,30 +83,7 @@ export const getBrandById = asyncHandler(async (req, res, next) => {
 // Path: /api/v1/brands/:id
 // Access: Public
 // Description: Update brand by ID
-export const updateBrand = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-  const { name } = req.body;
-
-  // Validate ObjectId
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return next(new ApiError("رقم العلامة التجارية غير صحيح", 400));
-  }
-
-  const brand = await BrandModel.findOneAndUpdate(
-    { _id: id },
-    { name, slug: slugify(name) },
-    { new: true }
-  );
-
-  if (brand) {
-    await brand.save();
-    res
-      .status(200)
-      .json({ message: "تم تحديث العلامة التجارية بنجاح!", data: brand });
-  } else {
-    return next(new ApiError("Brand not found", 404));
-  }
-});
+export const updateBrand = updateOne(BrandModel);
 
 // ------------------- Delete Brand -------------------
 // Method: DELETE

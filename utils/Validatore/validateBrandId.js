@@ -1,5 +1,6 @@
-import { param, check } from "express-validator";
+import { param, check, body } from "express-validator";
 import validatorMiddleware from "../../middlewares/validatorMiddleware.js";
+import slugify from "slugify";
 
 // ------------------ createBrandValidator ------------------
 export const createBrandValidator = [
@@ -16,6 +17,11 @@ export const getBrandValidator = [
 // ------------------ updateBrandValidator ------------------
 export const updateBrandValidator = [
   param("id").isMongoId().withMessage("Invalid brand id"),
+  // slugyfy name
+  body("name").custom((value, { req }) => {
+    req.body.slug = slugify(value);
+    return true;
+  }),
   validatorMiddleware,
 ];
 
