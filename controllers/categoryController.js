@@ -4,6 +4,7 @@ import slugify from "slugify";
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
 import ApiFeatures from "../utils/apiFeatures.js";
+import { deleteOne } from "./handlersFactory.js"; // Updated import
 
 import SubcategoryModel from "../models/subCategoryModel.js";
 // ------------------- Create Category -------------------
@@ -119,19 +120,4 @@ export const updateCategory = asyncHandler(async (req, res, next) => {
 // Path: /api/v1/categories/:id
 // Access: Public
 // Description: Delete category by ID
-export const deleteCategory = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-
-  // Validate ObjectId before deleting
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return next(new ApiError("Invalid category ID", 400));
-  }
-
-  const category = await CategoryModel.findById(id);
-  if (category) {
-    await CategoryModel.deleteOne({ _id: id });
-    res.status(200).json({ message: "تم حذف القسم بنجاح!" });
-  } else {
-    res.status(404).json({ message: "القسم غير موجود!" });
-  }
-});
+export const deleteCategory = deleteOne(CategoryModel); // Updated

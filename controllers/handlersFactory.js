@@ -10,5 +10,5 @@ export const deleteOne = (Model) =>
     if (!document) {
       return next(new ApiError(`No document for this id ${id}`, 404));
     }
-    res.status(200).json({ message: "تم حذف العلامة التجارية بنجاح!" });
+    res.status(200).json({ message: "Document deleted successfully!" });
   });
