@@ -4,6 +4,7 @@ import slugify from "slugify";
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
 import ApiFeatures from "../utils/apiFeatures.js";
+import { deleteOne } from "./handlersFactory.js"; // Updated import
 
 // ------------------- Create Brand -------------------
 // Method: POST
@@ -112,19 +113,4 @@ export const updateBrand = asyncHandler(async (req, res, next) => {
 // Path: /api/v1/brands/:id
 // Access: Public
 // Description: Delete brand by ID
-export const deleteBrand = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-
-  // Validate ObjectId before deleting
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return next(new ApiError("Invalid brand ID", 400));
-  }
-
-  const brand = await BrandModel.findById(id);
-  if (brand) {
-    await BrandModel.deleteOne({ _id: id });
-    res.status(200).json({ message: "تم حذف العلامة التجارية بنجاح!" });
-  } else {
-    res.status(404).json({ message: "العلامة التجارية غير موجودة!" });
-  }
-});
+export const deleteBrand = deleteOne(BrandModel);
