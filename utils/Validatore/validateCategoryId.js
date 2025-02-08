@@ -1,5 +1,6 @@
 import { param, check } from "express-validator";
 import validatorMiddleware from "../../middlewares/validatorMiddleware.js";
+import slugify from "slugify";
 
 // ------------------ CreateCategoryValidator ------------------
 export const createCategoryValidator = [
