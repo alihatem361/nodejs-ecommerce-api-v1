@@ -5,6 +5,11 @@ import slugify from "slugify";
 // ------------------ CreateCategoryValidator ------------------
 export const createCategoryValidator = [
   check("name").notEmpty().isLength({ min: 3 }).withMessage("Name is required"),
+  // slugify name
+  check("name").custom((value, { req }) => {
+    req.body.slug = slugify(value);
+    return true;
+  }),
   validatorMiddleware,
 ];
 

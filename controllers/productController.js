@@ -4,26 +4,14 @@ import slugify from "slugify";
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
 import ApiFeatures from "../utils/apiFeatures.js";
-import { deleteOne, updateOne } from "./handlersFactory.js"; // Updated import
+import { deleteOne, updateOne, createOne } from "./handlersFactory.js"; // Updated import
 
 // ------------------- Create Product -------------------
 // Method: POST
 // Path: /api/v1/products
 // Access: Public
 // Description: Create a new product
-export const createProduct = asyncHandler(async (req, res, next) => {
-  req.body.slug = slugify(req.body.title);
-  const newProduct = new ProductModel(req.body);
-
-  try {
-    await newProduct.save();
-    res
-      .status(201)
-      .json({ message: "Product created successfully!", data: newProduct });
-  } catch (error) {
-    return next(new ApiError(error.message, 400));
-  }
-});
+export const createProduct = createOne(ProductModel); // Updated function call
 
 // ------------------- Get Products -------------------
 // Method: GET
