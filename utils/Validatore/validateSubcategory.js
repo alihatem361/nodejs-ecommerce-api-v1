@@ -8,7 +8,11 @@ export const createSubcategoryValidator = [
     .notEmpty()
     .withMessage("Name is required")
     .isLength({ min: 3 })
-    .withMessage("Name must be at least 3 characters long"),
+    .withMessage("Name must be at least 3 characters long")
+    .custom((value, { req }) => {
+      req.body.slug = slugify(value);
+      return true;
+    }),
   check("categoryId").notEmpty().withMessage("Category id is required"),
   validatorMiddleware,
 ];

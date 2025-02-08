@@ -3,25 +3,14 @@ import slugify from "slugify";
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js"; // Import ApiError
 import ApiFeatures from "../utils/apiFeatures.js"; // Import ApiFeatures
-import { deleteOne, updateOne } from "./handlersFactory.js"; // Updated import
+import { deleteOne, updateOne, createOne } from "./handlersFactory.js"; // Updated import
 
 // ------------------- Create Category -------------------
 // Method: POST
 // Path: /api/v1/subcategories
 // Access: Public
 // Description: Create a new subcategory
-export const createSubcategory = asyncHandler(async (req, res, next) => {
-  const subcategory = new SubcategoryModel({
-    name: req.body.name,
-    slug: slugify(req.body.name),
-    categoryId: req.body.categoryId,
-  });
-
-  await subcategory.save();
-  res.status(201).json({
-    status: "تم إنشاء الفئة الفرعية بنجاح!",
-  });
-});
+export const createSubcategory = createOne(SubcategoryModel); // Updated createSubcategory
 
 // ------------------- Get Subcategories -------------------
 // Method: GET

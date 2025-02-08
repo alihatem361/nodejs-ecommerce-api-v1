@@ -4,30 +4,14 @@ import slugify from "slugify";
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
 import ApiFeatures from "../utils/apiFeatures.js";
-import { deleteOne, updateOne } from "./handlersFactory.js"; // Updated import
+import { deleteOne, updateOne, createOne } from "./handlersFactory.js"; // Updated import
 
 // ------------------- Create Brand -------------------
 // Method: POST
 // Path: /api/v1/brands
 // Access: Public
 // Description: Create a new brand
-export const createBrand = asyncHandler(async (req, res) => {
-  const { name } = req.body;
-  const newBrand = new BrandModel({ name, slug: slugify(name) });
-
-  try {
-    await newBrand.save();
-    res
-      .status(201)
-      .json({ message: "تم إنشاء العلامة التجارية بنجاح!", data: newBrand });
-  } catch (error) {
-    if (error.code === 11000) {
-      res.status(400).json({ message: "هذه العلامة التجارية موجودة بالفعل!" });
-    } else {
-      res.status(500).json({ message: error.message });
-    }
-  }
-});
+export const createBrand = createOne(BrandModel); // Updated function call
 
 // ------------------- Get Brands -------------------
 // Method: GET
