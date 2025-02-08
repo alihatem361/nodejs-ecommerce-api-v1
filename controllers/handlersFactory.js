@@ -22,12 +22,10 @@ export const createOne = (Model) =>
   });
 
 // get one document by ID
-export const getOne = (Model, popOptions) =>
+export const getOne = (Model) =>
   asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     let query = Model.findById(id);
-
-    if (popOptions) query = query.populate(popOptions.path, popOptions.select);
 
     const document = await query.select("-__v");
 
@@ -38,13 +36,13 @@ export const getOne = (Model, popOptions) =>
   });
 
 // Get all documents
-export const getAll = (Model) =>
+export const getAll = (Model, modelName = "") =>
   asyncHandler(async (req, res) => {
     // number of documents
     const numberOfDocuments = await Model.countDocuments();
     const apiFeatures = new ApiFeatures(Model.find(), req.query)
       .filter()
-      .search()
+      .search(modelName)
       .sort()
       .limitFields()
       .paginate(numberOfDocuments);

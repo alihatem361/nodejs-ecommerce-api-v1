@@ -20,17 +20,14 @@ export const createProduct = createOne(ProductModel); // Updated function call
 // Path: /api/v1/products
 // Access: Public
 // Description: Get all products with pagination
-export const getProducts = getAll(ProductModel); // Updated function call
+export const getProducts = getAll(ProductModel, "Products"); // Updated function call
 
 // ------------------- Get Product By ID -------------------
 // Method: GET
 // Path: /api/v1/products/:id
 // Access: Public
 // Description: Get product by ID
-export const getProductById = getOne(ProductModel, {
-  path: "category",
-  select: "name -_id",
-}); // Updated function call
+export const getProductById = getOne(ProductModel); // Updated function call
 
 // ------------------- Update Product -------------------
 // Method: PUT
