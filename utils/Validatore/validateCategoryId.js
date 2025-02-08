@@ -17,6 +17,11 @@ export const getCategoryValidator = [
 // ------------------ updateCategoryValidator ------------------
 export const updateCategoryValidator = [
   param("id").isMongoId().withMessage("Invalid category id"),
+  // slugyfy name
+  check("name").custom((value, { req }) => {
+    req.body.slug = slugify(value);
+    return true;
+  }),
   validatorMiddleware,
 ];
 

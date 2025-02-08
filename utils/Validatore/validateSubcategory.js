@@ -1,5 +1,6 @@
 import { param, check } from "express-validator";
 import validatorMiddleware from "../../middlewares/validatorMiddleware.js";
+import slugify from "slugify";
 
 // ------------------ createSubcategoryValidator ------------------
 export const createSubcategoryValidator = [
@@ -31,6 +32,11 @@ export const updateSubcategoryValidator = [
     .optional()
     .isLength({ min: 3 })
     .withMessage("Name must be at least 3 characters long"),
+  // slugify name
+  check("name").custom((value, { req }) => {
+    req.body.slug = slugify(value);
+    return true;
+  }),
   validatorMiddleware,
 ];
 
