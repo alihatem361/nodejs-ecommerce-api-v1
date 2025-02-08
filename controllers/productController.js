@@ -4,7 +4,7 @@ import slugify from "slugify";
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
 import ApiFeatures from "../utils/apiFeatures.js";
-import { deleteOne } from "./handlersFactory.js"; // Updated import
+import { deleteOne, updateOne } from "./handlersFactory.js"; // Updated import
 
 // ------------------- Create Product -------------------
 // Method: POST
@@ -75,25 +75,7 @@ export const getProductById = asyncHandler(async (req, res, next) => {
 // Path: /api/v1/products/:id
 // Access: Public
 // Description: Update product by ID
-export const updateProduct = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-  if (req.body.title) {
-    req.body.slug = slugify(req.body.title);
-  }
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return next(new ApiError("Invalid product ID", 400));
-  }
-
-  const product = await ProductModel.findOneAndUpdate({ _id: id }, req.body);
-
-  if (product) {
-    await product.save();
-    res.status(200).json({ message: "Product updated successfully!" });
-  } else {
-    return next(new ApiError("Product not found", 404));
-  }
-});
-
+export const updateProduct = updateOne(ProductModel); // Updated function call
 // ------------------- Delete Product -------------------
 // Method: DELETE
 // Path: /api/v1/products/:id

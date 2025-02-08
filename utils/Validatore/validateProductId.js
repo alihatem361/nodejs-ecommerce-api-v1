@@ -2,6 +2,7 @@ import { param, check } from "express-validator";
 import validatorMiddleware from "../../middlewares/validatorMiddleware.js";
 import Category from "../../models/categoryModel.js";
 import SubCategory from "../../models/subCategoryModel.js";
+import slugify from "slugify";
 
 // ------------------ createProductValidator ------------------
 export const createProductValidator = [
@@ -125,6 +126,13 @@ export const getProductValidator = [
 export const updateProductValidator = [
   param("id").isMongoId().withMessage("Invalid product id"),
   check("title").optional().notEmpty().withMessage("Title is required"),
+  // slugify title
+  check("title")
+    .optional()
+    .custom((value, { req }) => {
+      req.body.slug = slugify(value);
+      return true;
+    }),
   check("price")
     .optional()
     .isFloat({ gt: 0 })
