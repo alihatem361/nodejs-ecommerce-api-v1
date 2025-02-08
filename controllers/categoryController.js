@@ -1,5 +1,6 @@
 import CategoryModel from "../models/categoryModel.js";
-
+import SubcategoryModel from "../models/subCategoryModel.js";
+import asyncHandler from "express-async-handler";
 import {
   deleteOne,
   updateOne,
@@ -22,12 +23,44 @@ export const createCategory = createOne(CategoryModel); // Updated
 // Description: Get all categories with pagination
 export const getCategories = getAll(CategoryModel); // Updated
 
+// ------------------- Get Subcategories By Category ID / Nested Routes -------------------
+// Method: GET
+// Path: /api/v1/categories/:categoryId/subcategories
+// Access: Public
+// Description: Get all subcategories by category ID
+export const getSubcategoriesByCategoryId = asyncHandler(
+  async (req, res, next) => {
+    const page = parseInt(req.query.page) || 1; // Default to page 1 if not specified
+    const limit = parseInt(req.query.limit) || 10; // Default to 10 items per page if not specified
+    const skip = (page - 1) * limit;
+
+    const subcategories = await SubcategoryModel.find({
+      categoryId: req.params.categoryId, // Correctly access categoryId
+    })
+      .select("-__v")
+      .skip(skip)
+      .limit(limit);
+
+    if (subcategories.length === 0) {
+      return next(new ApiError("Subcategories not found", 404)); // Error handling
+    }
+    res.status(200).json({
+      status: "success",
+      results: subcategories.length,
+      data: {
+        subcategories,
+      },
+    });
+  }
+);
+
 // ------------------- Get Category By ID -------------------
 // Method: GET
 // Path: /api/v1/categories/:id
 // Access: Public
 // Description: Get category by ID
 export const getCategoryById = getOne(CategoryModel); // Updated
+
 // ------------------- Update Category -------------------
 // Method: PUT
 // Path: /api/v1/categories/:id

@@ -19,6 +19,12 @@ export const getCategoryValidator = [
   validatorMiddleware,
 ];
 
+// ------------------ getSubcategoriesByCategoryIdValidator ------------------
+export const getSubcategoriesByCategoryIdValidator = [
+  param("categoryId").isMongoId().withMessage("Invalid category id"),
+  validatorMiddleware,
+];
+
 // ------------------ updateCategoryValidator ------------------
 export const updateCategoryValidator = [
   param("id").isMongoId().withMessage("Invalid category id"),

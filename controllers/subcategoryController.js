@@ -1,9 +1,13 @@
 import SubcategoryModel from "../models/subCategoryModel.js";
-import slugify from "slugify";
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js"; // Import ApiError
-import ApiFeatures from "../utils/apiFeatures.js"; // Import ApiFeatures
-import { deleteOne, updateOne, createOne, getOne } from "./handlersFactory.js"; // Updated import
+import {
+  deleteOne,
+  updateOne,
+  createOne,
+  getOne,
+  getAll,
+} from "./handlersFactory.js"; // Updated import
 
 // ------------------- Create Category -------------------
 // Method: POST
@@ -17,23 +21,7 @@ export const createSubcategory = createOne(SubcategoryModel); // Updated createS
 // Path: /api/v1/subcategories
 // Access: Public
 // Description: Get all subcategories
-export const getAllSubcategories = asyncHandler(async (req, res, next) => {
-  const numberOfDocuments = await SubcategoryModel.countDocuments();
-  const apiFeatures = new ApiFeatures(SubcategoryModel.find(), req.query)
-    .filter()
-    .search()
-    .sort()
-    .limitFields()
-    .paginate(numberOfDocuments);
-
-  const subcategories = await apiFeatures.mongooseQuery;
-  res.status(200).json({
-    result: subcategories.length,
-    paginationResult: apiFeatures.paginationResult,
-    total: numberOfDocuments,
-    data: subcategories,
-  });
-});
+export const getAllSubcategories = getAll(SubcategoryModel); // Updated getAllSubcategories
 
 // ------------------- Get Subcategories By Category ID / Nested Routes -------------------
 // Method: GET
