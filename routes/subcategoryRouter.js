@@ -22,7 +22,6 @@ const router = express.Router({ mergeParams: true });
 router
   .route("/")
   .post(createSubcategoryValidator, createSubcategory)
-
   .get(getAllSubcategories);
 
 router
