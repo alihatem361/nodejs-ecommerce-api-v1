@@ -3,7 +3,7 @@ import slugify from "slugify";
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js"; // Import ApiError
 import ApiFeatures from "../utils/apiFeatures.js"; // Import ApiFeatures
-import { deleteOne, updateOne, createOne } from "./handlersFactory.js"; // Updated import
+import { deleteOne, updateOne, createOne, getOne } from "./handlersFactory.js"; // Updated import
 
 // ------------------- Create Category -------------------
 // Method: POST
@@ -71,20 +71,7 @@ export const getSubcategoriesByCategoryId = asyncHandler(
 // Path: /api/v1/subcategories/:id
 // Access: Public
 // Description: Get subcategory by ID
-export const getSubcategoryById = asyncHandler(async (req, res, next) => {
-  const subcategory = await SubcategoryModel.findById(req.params.id).select(
-    "-__v"
-  );
-  if (!subcategory) {
-    return next(new ApiError("Subcategory not found", 404)); // Error handling
-  }
-  res.status(200).json({
-    status: "success",
-    data: {
-      subcategory,
-    },
-  });
-});
+export const getSubcategoryById = getOne(SubcategoryModel); // Updated getSubcategoryById
 
 // ------------------- Update Subcategory -------------------
 // Method: PUT

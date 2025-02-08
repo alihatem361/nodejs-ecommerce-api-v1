@@ -21,6 +21,22 @@ export const createOne = (Model) =>
     }
   });
 
+// get one document by ID
+export const getOne = (Model, popOptions) =>
+  asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    let query = Model.findById(id);
+
+    if (popOptions) query = query.populate(popOptions.path, popOptions.select);
+
+    const document = await query.select("-__v");
+
+    if (!document) {
+      return next(new ApiError(`No document for this id ${id}`, 404));
+    }
+    res.status(200).json({ data: document });
+  });
+
 // Update One document by ID
 export const updateOne = (Model) =>
   asyncHandler(async (req, res, next) => {

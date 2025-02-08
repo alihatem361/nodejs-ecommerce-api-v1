@@ -4,7 +4,7 @@ import slugify from "slugify";
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
 import ApiFeatures from "../utils/apiFeatures.js";
-import { deleteOne, updateOne, createOne } from "./handlersFactory.js"; // Updated import
+import { deleteOne, updateOne, createOne, getOne } from "./handlersFactory.js"; // Updated import
 
 // ------------------- Create Brand -------------------
 // Method: POST
@@ -42,25 +42,7 @@ export const getBrands = asyncHandler(async (req, res) => {
 // Path: /api/v1/brands/:id
 // Access: Public
 // Description: Get brand by ID
-export const getBrandById = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-
-  // Validate ObjectId
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    // use ApiError class to handle errors
-    return next(new ApiError("Invalid brand ID", 400));
-  }
-
-  const brand = await BrandModel.findById(id).select("-__v");
-  if (brand) {
-    res.status(200).json({
-      data: brand,
-    });
-  } else {
-    // use ApiError class to handle errors
-    return next(new ApiError("Brand not found", 404));
-  }
-});
+export const getBrandById = getOne(BrandModel); // Updated function call
 
 // ------------------- Update Brand -------------------
 // Method: PUT
