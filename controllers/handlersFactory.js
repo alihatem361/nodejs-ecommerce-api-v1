@@ -37,6 +37,27 @@ export const getOne = (Model, popOptions) =>
     res.status(200).json({ data: document });
   });
 
+// Get all documents
+export const getAll = (Model) =>
+  asyncHandler(async (req, res) => {
+    // number of documents
+    const numberOfDocuments = await Model.countDocuments();
+    const apiFeatures = new ApiFeatures(Model.find(), req.query)
+      .filter()
+      .search()
+      .sort()
+      .limitFields()
+      .paginate(numberOfDocuments);
+
+    const documents = await apiFeatures.mongooseQuery;
+    res.status(200).json({
+      result: documents.length,
+      paginationResult: apiFeatures.paginationResult,
+      total: numberOfDocuments,
+      data: documents,
+    });
+  });
+
 // Update One document by ID
 export const updateOne = (Model) =>
   asyncHandler(async (req, res, next) => {

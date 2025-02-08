@@ -1,10 +1,12 @@
-import mongoose from "mongoose";
 import BrandModel from "../models/brandModel.js";
-import slugify from "slugify";
-import asyncHandler from "express-async-handler";
-import ApiError from "../utils/ApiError.js";
-import ApiFeatures from "../utils/apiFeatures.js";
-import { deleteOne, updateOne, createOne, getOne } from "./handlersFactory.js"; // Updated import
+
+import {
+  deleteOne,
+  updateOne,
+  createOne,
+  getOne,
+  getAll,
+} from "./handlersFactory.js"; // Updated import
 
 // ------------------- Create Brand -------------------
 // Method: POST
@@ -18,24 +20,7 @@ export const createBrand = createOne(BrandModel); // Updated function call
 // Path: /api/v1/brands
 // Access: Public
 // Description: Get all brands with pagination
-export const getBrands = asyncHandler(async (req, res) => {
-  // number of documents
-  const numberOfDocuments = await BrandModel.countDocuments();
-  const apiFeatures = new ApiFeatures(BrandModel.find(), req.query)
-    .filter()
-    .search()
-    .sort()
-    .limitFields()
-    .paginate(numberOfDocuments);
-
-  const brands = await apiFeatures.mongooseQuery;
-  res.status(200).json({
-    result: brands.length,
-    paginationResult: apiFeatures.paginationResult,
-    total: numberOfDocuments,
-    data: brands,
-  });
-});
+export const getBrands = getAll(BrandModel); // Updated function call
 
 // ------------------- Get Brand By ID -------------------
 // Method: GET

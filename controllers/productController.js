@@ -1,10 +1,12 @@
-import mongoose from "mongoose";
 import ProductModel from "../models/productModel.js";
-import slugify from "slugify";
-import asyncHandler from "express-async-handler";
-import ApiError from "../utils/ApiError.js";
-import ApiFeatures from "../utils/apiFeatures.js";
-import { deleteOne, updateOne, createOne, getOne } from "./handlersFactory.js"; // Updated import
+
+import {
+  deleteOne,
+  updateOne,
+  createOne,
+  getOne,
+  getAll,
+} from "./handlersFactory.js"; // Updated import
 
 // ------------------- Create Product -------------------
 // Method: POST
@@ -18,23 +20,7 @@ export const createProduct = createOne(ProductModel); // Updated function call
 // Path: /api/v1/products
 // Access: Public
 // Description: Get all products with pagination
-export const getProducts = asyncHandler(async (req, res) => {
-  const numberOfDocuments = await ProductModel.countDocuments();
-  const apiFeatures = new ApiFeatures(ProductModel.find(), req.query)
-    .filter()
-    .search("Products")
-    .sort()
-    .limitFields()
-    .paginate(numberOfDocuments);
-
-  const products = await apiFeatures.mongooseQuery;
-  res.status(200).json({
-    result: products.length,
-    paginationResult: apiFeatures.paginationResult,
-    total: numberOfDocuments,
-    data: products,
-  });
-});
+export const getProducts = getAll(ProductModel); // Updated function call
 
 // ------------------- Get Product By ID -------------------
 // Method: GET

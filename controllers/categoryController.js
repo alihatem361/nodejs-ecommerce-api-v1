@@ -1,12 +1,13 @@
-import mongoose from "mongoose";
 import CategoryModel from "../models/categoryModel.js";
-import slugify from "slugify";
-import asyncHandler from "express-async-handler";
-import ApiError from "../utils/ApiError.js";
-import ApiFeatures from "../utils/apiFeatures.js";
-import { deleteOne, updateOne, createOne, getOne } from "./handlersFactory.js"; // Updated import
 
-import SubcategoryModel from "../models/subCategoryModel.js";
+import {
+  deleteOne,
+  updateOne,
+  createOne,
+  getOne,
+  getAll,
+} from "./handlersFactory.js"; // Updated import
+
 // ------------------- Create Category -------------------
 // Method: POST
 // Path: /api/v1/categories
@@ -19,24 +20,7 @@ export const createCategory = createOne(CategoryModel); // Updated
 // Path: /api/v1/categories
 // Access: Public
 // Description: Get all categories with pagination
-export const getCategories = asyncHandler(async (req, res) => {
-  // number of documents
-  const numberOfDocuments = await CategoryModel.countDocuments();
-  const apiFeatures = new ApiFeatures(CategoryModel.find(), req.query)
-    .filter()
-    .search()
-    .sort()
-    .limitFields()
-    .paginate(numberOfDocuments);
-
-  const categories = await apiFeatures.mongooseQuery;
-  res.status(200).json({
-    result: categories.length,
-    paginationResult: apiFeatures.paginationResult,
-    total: numberOfDocuments,
-    data: categories,
-  });
-});
+export const getCategories = getAll(CategoryModel); // Updated
 
 // ------------------- Get Category By ID -------------------
 // Method: GET
