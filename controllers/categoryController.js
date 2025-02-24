@@ -1,6 +1,7 @@
 import CategoryModel from "../models/categoryModel.js";
 import SubcategoryModel from "../models/subCategoryModel.js";
 import asyncHandler from "express-async-handler";
+const multer = require("multer");
 import {
   deleteOne,
   updateOne,
@@ -8,6 +9,34 @@ import {
   getOne,
   getAll,
 } from "./handlersFactory.js"; // Updated import
+
+// configure multer
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public/images/categories");
+  },
+  filename: (req, file, cb) => {
+    const ext = file.mimetype.split("/")[1];
+    cb(null, `category-${req.params.id}-${Date.now()}.${ext}`);
+  },
+});
+
+// Check if the uploaded file is an image
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image")) {
+    cb(null, true);
+  } else {
+    cb(new ApiError("Please upload only images", 400), false);
+  }
+};
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+
+// ------------------- Upload Category Image -------------------
+// Method: POST
 
 // ------------------- Create Category -------------------
 // Method: POST
