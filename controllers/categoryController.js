@@ -1,7 +1,7 @@
 import CategoryModel from "../models/categoryModel.js";
 import SubcategoryModel from "../models/subCategoryModel.js";
 import asyncHandler from "express-async-handler";
-const multer = require("multer");
+import multer from "multer";
 import {
   deleteOne,
   updateOne,
