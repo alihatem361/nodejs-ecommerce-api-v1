@@ -2,25 +2,18 @@ import CategoryModel from "../models/categoryModel.js";
 import SubcategoryModel from "../models/subCategoryModel.js";
 import asyncHandler from "express-async-handler";
 import multer from "multer";
-import ApiError from "../utils/ApiError.js"; // Add this import
+import sharp from "sharp"; // Add this import
+import ApiError from "../utils/ApiError.js";
 import {
   deleteOne,
   updateOne,
   createOne,
   getOne,
   getAll,
-} from "./handlersFactory.js"; // Updated import
+} from "./handlersFactory.js";
 
-// configure multer
-const multerStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "public/images/categories");
-  },
-  filename: (req, file, cb) => {
-    const ext = file.mimetype.split("/")[1];
-    cb(null, `category-${Date.now()}.${ext}`);
-  },
-});
+// configure multer storage
+const multerStorage = multer.memoryStorage(); // Use memory storage
 
 // Check if the uploaded file is an image
 const multerFilter = (req, file, cb) => {
@@ -38,21 +31,38 @@ const upload = multer({
 
 // ------------------- Upload Category Image -------------------
 // Method: POST
-export const uploadCategoryImage = upload.single('image'); // Add this middleware
+export const uploadCategoryImage = upload.single('image');
+
+// ------------------- Resize Category Image -------------------
+// Method: POST
+export const resizeCategoryImage = asyncHandler(async (req, res, next) => {
+  if (!req.file) return next();
+
+  const filename = `category-${Date.now()}.jpeg`; // Create a unique filename
+
+
+  await sharp(req.file.buffer) // Use buffer instead of file path
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/images/categories/${filename}`);
+
+  next();
+});
 
 // ------------------- Create Category -------------------
 // Method: POST
 // Path: /api/v1/categories
 // Access: Public
 // Description: Create a new category
-export const createCategory =  createOne(CategoryModel); // Updated
+export const createCategory = createOne(CategoryModel);
 
 // ------------------- Get Categories -------------------
 // Method: GET
 // Path: /api/v1/categories
 // Access: Public
 // Description: Get all categories with pagination
-export const getCategories = getAll(CategoryModel); // Updated
+export const getCategories = getAll(CategoryModel);
 
 // ------------------- Get Subcategories By Category ID / Nested Routes -------------------
 // Method: GET
@@ -90,18 +100,18 @@ export const getSubcategoriesByCategoryId = asyncHandler(
 // Path: /api/v1/categories/:id
 // Access: Public
 // Description: Get category by ID
-export const getCategoryById = getOne(CategoryModel); // Updated
+export const getCategoryById = getOne(CategoryModel);
 
 // ------------------- Update Category -------------------
 // Method: PUT
 // Path: /api/v1/categories/:id
 // Access: Public
 // Description: Update category by ID
-export const updateCategory = updateOne(CategoryModel); // Updated
+export const updateCategory = updateOne(CategoryModel);
 
 // ------------------- Delete Category -------------------
 // Method: DELETE
 // Path: /api/v1/categories/:id
 // Access: Public
 // Description: Delete category by ID
-export const deleteCategory = deleteOne(CategoryModel); // Updated
+export const deleteCategory = deleteOne(CategoryModel);

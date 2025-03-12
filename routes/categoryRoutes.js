@@ -14,11 +14,12 @@ import {
   deleteCategory,
   getSubcategoriesByCategoryId,
   uploadCategoryImage,
+  resizeCategoryImage,
 } from "../controllers/categoryController.js";
 
 const router = express.Router();
 
-router.post("/", uploadCategoryImage, createCategoryValidator, createCategory);
+router.post("/", uploadCategoryImage,resizeCategoryImage, createCategoryValidator, createCategory);
 router.get("/", getCategories);
 
 router.get("/:id", getCategoryValidator, getCategoryById);
