@@ -2,6 +2,7 @@ import CategoryModel from "../models/categoryModel.js";
 import SubcategoryModel from "../models/subCategoryModel.js";
 import asyncHandler from "express-async-handler";
 import multer from "multer";
+import ApiError from "../utils/ApiError.js"; // Add this import
 import {
   deleteOne,
   updateOne,
@@ -17,7 +18,7 @@ const multerStorage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const ext = file.mimetype.split("/")[1];
-    cb(null, `category-${req.params.id}-${Date.now()}.${ext}`);
+    cb(null, `category-${Date.now()}.${ext}`);
   },
 });
 
@@ -37,13 +38,29 @@ const upload = multer({
 
 // ------------------- Upload Category Image -------------------
 // Method: POST
+export const uploadCategoryImage = upload.single('image'); // Add this middleware
 
 // ------------------- Create Category -------------------
 // Method: POST
 // Path: /api/v1/categories
 // Access: Public
 // Description: Create a new category
-export const createCategory = createOne(CategoryModel); // Updated
+export const createCategory = asyncHandler(async (req, res, next) => {
+  try {
+    if (req.file) {
+      req.body.image = req.file.filename;
+    }
+    const category = await CategoryModel.create(req.body);
+    res.status(201).json({
+      status: "success",
+      data: {
+        category,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}); // Updated
 
 // ------------------- Get Categories -------------------
 // Method: GET

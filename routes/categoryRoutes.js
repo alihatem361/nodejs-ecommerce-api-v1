@@ -13,19 +13,20 @@ import {
   updateCategory,
   deleteCategory,
   getSubcategoriesByCategoryId,
+  uploadCategoryImage,
 } from "../controllers/categoryController.js";
 
 const router = express.Router();
 
-router.post("/categories", createCategoryValidator, createCategory);
-router.get("/categories", getCategories);
+router.post("/", uploadCategoryImage, createCategoryValidator, createCategory);
+router.get("/", getCategories);
 
-router.get("/categories/:id", getCategoryValidator, getCategoryById);
-router.put("/categories/:id", updateCategoryValidator, updateCategory);
-router.delete("/categories/:id", deleteCategoryValidator, deleteCategory);
-// Path: /api/v1/categories/:categoryId/subcategories
+router.get("/:id", getCategoryValidator, getCategoryById);
+router.put("/:id", updateCategoryValidator, updateCategory);
+router.delete("/:id", deleteCategoryValidator, deleteCategory);
+// Path: /api/v1/:categoryId/subcategories
 router.get(
-  "/categories/:categoryId/subcategories",
+  "/:categoryId/subcategories",
   getSubcategoriesByCategoryIdValidator,
   getSubcategoriesByCategoryId
 );
