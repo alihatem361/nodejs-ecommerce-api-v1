@@ -45,22 +45,7 @@ export const uploadCategoryImage = upload.single('image'); // Add this middlewar
 // Path: /api/v1/categories
 // Access: Public
 // Description: Create a new category
-export const createCategory = asyncHandler(async (req, res, next) => {
-  try {
-    if (req.file) {
-      req.body.image = req.file.filename;
-    }
-    const category = await CategoryModel.create(req.body);
-    res.status(201).json({
-      status: "success",
-      data: {
-        category,
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
-}); // Updated
+export const createCategory =  createOne(CategoryModel); // Updated
 
 // ------------------- Get Categories -------------------
 // Method: GET
