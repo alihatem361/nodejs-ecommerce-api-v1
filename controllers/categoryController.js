@@ -31,22 +31,24 @@ const upload = multer({
 
 // ------------------- Upload Category Image -------------------
 // Method: POST
-export const uploadCategoryImage = upload.single('image');
+export const uploadCategoryImage = upload.single("image");
 
 // ------------------- Resize Category Image -------------------
 // Method: POST
 export const resizeCategoryImage = asyncHandler(async (req, res, next) => {
+  // console.log("===================hello from resizeCategoryImage===================");
   if (!req.file) return next();
 
   const filename = `category-${Date.now()}.jpeg`; // Create a unique filename
 
-
   await sharp(req.file.buffer) // Use buffer instead of file path
     .resize(500, 500)
-    .toFormat('jpeg')
+    .toFormat("jpeg")
     .jpeg({ quality: 90 })
     .toFile(`public/images/categories/${filename}`);
 
+  // save the image name to the request body
+  req.body.image = filename;
   next();
 });
 

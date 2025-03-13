@@ -5,6 +5,8 @@ import ApiFeatures from "../utils/apiFeatures.js";
 // create a new document
 export const createOne = (Model) =>
   asyncHandler(async (req, res) => {
+    // log the request body
+    console.log("===>", req.body);
     const newCategory = new Model(req.body);
     try {
       await newCategory.save();
