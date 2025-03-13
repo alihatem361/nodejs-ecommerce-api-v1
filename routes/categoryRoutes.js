@@ -19,11 +19,23 @@ import {
 
 const router = express.Router();
 
-router.post("/", uploadCategoryImage,resizeCategoryImage, createCategoryValidator, createCategory);
+router.post(
+  "/",
+  uploadCategoryImage,
+  resizeCategoryImage,
+  createCategoryValidator,
+  createCategory
+);
 router.get("/", getCategories);
 
 router.get("/:id", getCategoryValidator, getCategoryById);
-router.put("/:id", updateCategoryValidator, updateCategory);
+router.put(
+  "/:id",
+  uploadCategoryImage,
+  resizeCategoryImage,
+  updateCategoryValidator,
+  updateCategory
+);
 router.delete("/:id", deleteCategoryValidator, deleteCategory);
 // Path: /api/v1/:categoryId/subcategories
 router.get(

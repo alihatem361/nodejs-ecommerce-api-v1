@@ -1,8 +1,6 @@
 import CategoryModel from "../models/categoryModel.js";
 import SubcategoryModel from "../models/subCategoryModel.js";
 import asyncHandler from "express-async-handler";
-import multer from "multer";
-import sharp from "sharp"; // Add this import
 import ApiError from "../utils/ApiError.js";
 import {
   deleteOne,
@@ -11,46 +9,18 @@ import {
   getOne,
   getAll,
 } from "./handlersFactory.js";
-
-// configure multer storage
-const multerStorage = multer.memoryStorage(); // Use memory storage
-
-// Check if the uploaded file is an image
-const multerFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image")) {
-    cb(null, true);
-  } else {
-    cb(new ApiError("Please upload only images", 400), false);
-  }
-};
-
-const upload = multer({
-  storage: multerStorage,
-  fileFilter: multerFilter,
-});
+import {
+  uploadSingleImage,
+  resizeImage,
+} from "../middlewares/uploadImageMiddleware.js";
 
 // ------------------- Upload Category Image -------------------
 // Method: POST
-export const uploadCategoryImage = upload.single("image");
+export const uploadCategoryImage = uploadSingleImage("image");
 
 // ------------------- Resize Category Image -------------------
 // Method: POST
-export const resizeCategoryImage = asyncHandler(async (req, res, next) => {
-  // console.log("===================hello from resizeCategoryImage===================");
-  if (!req.file) return next();
-
-  const filename = `category-${Date.now()}.jpeg`; // Create a unique filename
-
-  await sharp(req.file.buffer) // Use buffer instead of file path
-    .resize(500, 500)
-    .toFormat("jpeg")
-    .jpeg({ quality: 90 })
-    .toFile(`public/images/categories/${filename}`);
-
-  // save the image name to the request body
-  req.body.image = filename;
-  next();
-});
+export const resizeCategoryImage = resizeImage("categories", 500, 500);
 
 // ------------------- Create Category -------------------
 // Method: POST

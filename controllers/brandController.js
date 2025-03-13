@@ -1,3 +1,8 @@
+import {
+  uploadSingleImage,
+  resizeImage,
+} from "../middlewares/uploadImageMiddleware.js";
+
 import BrandModel from "../models/brandModel.js";
 
 import {
@@ -7,6 +12,14 @@ import {
   getOne,
   getAll,
 } from "./handlersFactory.js"; // Updated import
+
+// ------------------- Upload Brand Image -------------------
+// Method: POST
+export const uploadBrandImage = uploadSingleImage("image");
+
+// ------------------- Resize Brand Image -------------------
+// Method: POST
+export const resizeBrandImage = resizeImage("brands", 500, 500);
 
 // ------------------- Create Brand -------------------
 // Method: POST

@@ -1,7 +1,9 @@
+import path from "path";
 import express from "express";
 import dotenv from "dotenv";
 import morgan from "morgan";
 import multer from "multer"; // إضافة multer للتعامل مع form-data
+import { fileURLToPath } from "url"; // Add this line
 import connectDB from "./config/db.js";
 import logger from "./middlewares/logger.js";
 import ApiError from "./utils/ApiError.js";
@@ -27,12 +29,19 @@ const port = process.env.PORT || 3028;
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+// server static files from the public folder
 
 // إعداد multer للتعامل مع form-data (لو هتستخدم رفع ملفات)
 const upload = multer();
 
-app.use(express.static('public')); // Add this line to serve static files
+// Get __dirname equivalent in ES module
+const __filename = fileURLToPath(import.meta.url); // Add this line
+const __dirname = path.dirname(__filename); // Add this line
 
+app.use(express.static("public")); // Add this line to serve static files
+app.use(express.static(path.join(__dirname, "public/images/categories"))); // Update this line to serve static files from the specified path
+
+// EXAMPLE: of opening a file in the public folder : http://localhost:3028/images/categories/category-1741857724936.jpeg
 app.use(logger);
 
 // Routes
