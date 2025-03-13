@@ -22,6 +22,22 @@ const categorySchema = new mongoose.Schema(
   }
 );
 
+const setImagesURL = function (doc) {
+  if (doc.image && doc.image !== undefined && !doc.image.includes("http")) {
+    doc.image = `${process.env.BASE_URL}/images/categories/${doc.image}`;
+  }
+};
+
+// when a document is initialized with findOne or find
+categorySchema.post("init", function (doc) {
+  setImagesURL(doc);
+});
+
+// with create or update
+categorySchema.post("save", function (doc) {
+  setImagesURL(doc);
+});
+
 const CategoryModel = mongoose.model("Category", categorySchema);
 
 export default CategoryModel;

@@ -22,6 +22,22 @@ const brandSchema = new mongoose.Schema(
   }
 );
 
+const setImagesURL = function (doc) {
+  if (doc.image && doc.image !== undefined && !doc.image.includes("http")) {
+    doc.image = `${process.env.BASE_URL}/images/brands/${doc.image}`;
+  }
+};
+
+// when a document is initialized with findOne or find
+brandSchema.post("init", function (doc) {
+  setImagesURL(doc);
+});
+
+// with create or update
+brandSchema.post("save", function (doc) {
+  setImagesURL(doc);
+});
+
 const BrandModel = mongoose.model("Brand", brandSchema);
 
 export default BrandModel;

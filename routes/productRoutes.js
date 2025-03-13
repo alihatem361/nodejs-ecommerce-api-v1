@@ -15,10 +15,10 @@ import {
 
 const router = express.Router();
 
-router.post("/products", createProductValidator, createProduct);
-router.get("/products", getProducts);
-router.get("/products/:id", getProductValidator, getProductById);
-router.put("/products/:id", updateProductValidator, updateProduct);
-router.delete("/products/:id", deleteProductValidator, deleteProduct);
+router.post("/", createProductValidator, createProduct);
+router.get("/", getProducts);
+router.get("/:id", getProductValidator, getProductById);
+router.put("/:id", updateProductValidator, updateProduct);
+router.delete("/:id", deleteProductValidator, deleteProduct);
 
 export default router;
