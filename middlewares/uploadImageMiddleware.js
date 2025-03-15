@@ -3,25 +3,30 @@ import sharp from "sharp";
 import { v4 as uuidv4 } from "uuid"; // Import uuid
 import ApiError from "../utils/ApiError.js";
 
-// configure multer storage
-const multerStorage = multer.memoryStorage(); // Use memory storage
+const multerOptions = (fieldName) => {
+  // configure multer storage
+  const multerStorage = multer.memoryStorage(); // Use memory storage
 
-// Check if the uploaded file is an image
-const multerFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image")) {
-    cb(null, true);
-  } else {
-    cb(new ApiError("Please upload only images", 400), false);
-  }
+  // Check if the uploaded file is an image
+  const multerFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith("image")) {
+      cb(null, true);
+    } else {
+      cb(new ApiError("Please upload only images", 400), false);
+    }
+  };
+
+  const upload = multer({
+    storage: multerStorage,
+    fileFilter: multerFilter,
+  });
+
+  return upload;
 };
 
-const upload = multer({
-  storage: multerStorage,
-  fileFilter: multerFilter,
-});
-
 // Middleware to upload a single image
-export const uploadSingleImage = (fieldName) => upload.single(fieldName);
+export const uploadSingleImage = (fieldName) =>
+  multerOptions(fieldName).single(fieldName);
 
 // Middleware to resize the uploaded image
 export const resizeImage =
@@ -40,3 +45,8 @@ export const resizeImage =
     req.body.image = filename;
     next();
   };
+
+// Middleware to upload multiple images
+export const uploadMultipleImages = (fields) => {
+  return multerOptions(fields).fields(fields);
+};
