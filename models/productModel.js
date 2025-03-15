@@ -71,6 +71,27 @@ const productSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+const setImagesURL = function (doc) {
+  if (doc.imageCover && !doc.imageCover.startsWith("http")) {
+    doc.imageCover = `${process.env.BASE_URL}/images/products/${doc.imageCover}`;
+  }
+  if (doc.images && doc.images.length > 0) {
+    doc.images = doc.images.map(
+      (image) => `${process.env.BASE_URL}/images/products/${image}`
+    );
+  }
+};
+
+// when a document is initialized with findOne or find
+productSchema.post("init", function (doc) {
+  setImagesURL(doc);
+});
+
+// with create or update
+productSchema.post("save", function (doc) {
+  setImagesURL(doc);
+});
+
 // Mongoose query middleware
 productSchema.pre(/^find/, function (next) {
   this.populate({
