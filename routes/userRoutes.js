@@ -9,11 +9,20 @@ import {
   resizeUserProfileImage,
 } from "../controllers/userController.js";
 
+import {
+  createUserValidator,
+  getUserValidator,
+  updateUserValidator,
+  changeUserPasswordValidator,
+  deleteUserValidator,
+  updateLoggedUserValidator,
+} from "../utils/Validatore/userValidator.js";
+
 const router = express.Router();
 
 router
   .route("/")
-  .get(getUsers)
+  .get(getUserValidator, getUsers)
   .post(uploadUserProfileImage, resizeUserProfileImage, createUser);
 router
   .route("/:id")
