@@ -9,6 +9,7 @@ const multerOptions = (fieldName) => {
 
   // Check if the uploaded file is an image
   const multerFilter = (req, file, cb) => {
+    console.log("Multer Filter - File:", file);
     if (file.mimetype.startsWith("image")) {
       cb(null, true);
     } else {
@@ -31,19 +32,32 @@ export const uploadSingleImage = (fieldName) =>
 // Middleware to resize the uploaded image
 export const resizeImage =
   (folder, width, height) => async (req, res, next) => {
-    if (!req.file) return next();
+    console.log("Request Body:", req.body);
+    console.log("Request File:", req.file);
+    console.log("Folder:", folder);
 
-    const filename = `${folder}-${uuidv4()}.jpeg`; // Use uuid to create a unique filename
+    if (!req.file) {
+      console.log("No file found in request");
+      return next();
+    }
 
-    await sharp(req.file.buffer) // Use buffer instead of file path
-      .resize(width, height)
-      .toFormat("jpeg")
-      .jpeg({ quality: 90 })
-      .toFile(`public/images/${folder}/${filename}`);
+    const filename = `${folder}-${uuidv4()}.jpeg`;
+    console.log("Generated filename:", filename);
 
-    // save the image name to the request body
-    req.body.image = filename;
-    next();
+    try {
+      await sharp(req.file.buffer)
+        .resize(width, height)
+        .toFormat("jpeg")
+        .jpeg({ quality: 90 })
+        .toFile(`public/images/${folder}/${filename}`);
+
+      console.log("Image processed and saved successfully");
+      req.body[req.file.fieldname] = filename;
+      next();
+    } catch (error) {
+      console.error("Error processing image:", error);
+      next(error);
+    }
   };
 
 // Middleware to upload multiple images

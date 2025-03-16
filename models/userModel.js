@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema(
   {
@@ -38,6 +38,22 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+const setImagesURL = function (doc) {
+  if (doc.profileImg && !doc.profileImg.startsWith("http")) {
+    doc.profileImg = `${process.env.BASE_URL}/images/products/${doc.profileImg}`;
+  }
+};
+
+// when a document is initialized with findOne or find
+userSchema.post("init", function (doc) {
+  setImagesURL(doc);
+});
+
+// with create or update
+userSchema.post("save", function (doc) {
+  setImagesURL(doc);
+});
 
 const User = mongoose.model("User", userSchema);
 

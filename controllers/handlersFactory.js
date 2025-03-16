@@ -59,6 +59,7 @@ export const getAll = (Model, modelName = "") =>
 // Update One document by ID
 export const updateOne = (Model) =>
   asyncHandler(async (req, res, next) => {
+    console.log(req.body, "=====>");
     try {
       const document = await Model.findByIdAndUpdate(req.params.id, req.body, {
         new: true,

@@ -1,11 +1,21 @@
 import User from "../models/userModel.js";
 import {
+  uploadSingleImage,
+  resizeImage,
+} from "../middlewares/uploadImageMiddleware.js";
+import {
   deleteOne,
   updateOne,
   createOne,
   getOne,
   getAll,
 } from "./handlersFactory.js";
+
+// Middleware to upload user profile image
+export const uploadUserProfileImage = uploadSingleImage("profileImg");
+
+// Middleware to resize the uploaded user profile image
+export const resizeUserProfileImage = resizeImage("users", 500, 500);
 
 // ------------------- Create User -------------------
 // Method: POST
@@ -40,4 +50,17 @@ export const updateUser = updateOne(User);
 // Path: /api/v1/users/:id
 // Access: Private (Admin)
 // Description: Delete user by ID
-export const deleteUser = deleteOne(User);
+// update this function to unactiove user not delet him
+export const deleteUser = async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(req.params.id, {
+    active: false,
+  }).select("-__v -password -role -active");
+  if (!user) {
+    return next(new ApiError("User not found", 404));
+  }
+  res.status(200).json({
+    status: "success",
+    message: "User deleted successfully",
+    data: user,
+  });
+};
