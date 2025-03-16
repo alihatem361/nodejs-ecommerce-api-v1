@@ -1,24 +1,43 @@
 import User from "../models/userModel.js";
+import {
+  deleteOne,
+  updateOne,
+  createOne,
+  getOne,
+  getAll,
+} from "./handlersFactory.js";
 
-// Create a new user
-export const createUser = async (req, res) => {
-  const { name, email, age } = req.body;
-  const newUser = new User({ name, email, age });
+// ------------------- Create User -------------------
+// Method: POST
+// Path: /api/v1/users
+// Access: Private (Admin)
+// Description: Create a new user
+export const createUser = createOne(User);
 
-  try {
-    await newUser.save();
-    res.status(201).json({ message: "User created successfully!" });
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
+// ------------------- Get Users -------------------
+// Method: GET
+// Path: /api/v1/users
+// Access: Private (Admin)
+// Description: Get all users with pagination
+export const getUsers = getAll(User, "Users");
 
-// get all users
-export const getUsers = async (req, res) => {
-  try {
-    const users = await User.find();
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(404).json({ message: error.message });
-  }
-};
+// ------------------- Get User By ID -------------------
+// Method: GET
+// Path: /api/v1/users/:id
+// Access: Private (Admin)
+// Description: Get user by ID
+export const getUserById = getOne(User);
+
+// ------------------- Update User -------------------
+// Method: PUT
+// Path: /api/v1/users/:id
+// Access: Private (Admin)
+// Description: Update user by ID
+export const updateUser = updateOne(User);
+
+// ------------------- Delete User -------------------
+// Method: DELETE
+// Path: /api/v1/users/:id
+// Access: Private (Admin)
+// Description: Delete user by ID
+export const deleteUser = deleteOne(User);
