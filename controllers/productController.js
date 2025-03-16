@@ -31,8 +31,6 @@ export const resizeProductImage = async (req, res, next) => {
     .toFile(`public/images/products/${imageCoverFilename}`);
 
   req.body.imageCover = imageCoverFilename;
-  console.log("===>", req.body.imageCover);
-  console.log("===>", imageCoverFilename);
 
   // 2) Images using uuid and map
   // check if there are images
