@@ -12,10 +12,6 @@ import {
 import {
   createUserValidator,
   getUserValidator,
-  updateUserValidator,
-  changeUserPasswordValidator,
-  deleteUserValidator,
-  updateLoggedUserValidator,
 } from "../utils/Validatore/userValidator.js";
 
 const router = express.Router();
@@ -23,7 +19,12 @@ const router = express.Router();
 router
   .route("/")
   .get(getUserValidator, getUsers)
-  .post(uploadUserProfileImage, resizeUserProfileImage, createUser);
+  .post(
+    uploadUserProfileImage,
+    resizeUserProfileImage,
+    createUserValidator,
+    createUser
+  );
 router
   .route("/:id")
   .get(getUserById)

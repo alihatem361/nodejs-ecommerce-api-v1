@@ -11,7 +11,7 @@ import {
   getProductById,
   updateProduct,
   deleteProduct,
-  uploadProductMediaImages,
+  uploadProductImages,
   resizeProductImage,
 } from "../controllers/productController.js";
 
@@ -19,7 +19,7 @@ const router = express.Router();
 
 router.post(
   "/",
-  uploadProductMediaImages,
+  uploadProductImages,
   resizeProductImage,
   createProductValidator,
   createProduct
