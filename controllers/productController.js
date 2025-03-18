@@ -2,7 +2,7 @@ import multer from "multer";
 import ApiError from "../utils/ApiError.js";
 import { v4 as uuidv4 } from "uuid"; // Import uuid
 import sharp from "sharp";
-import { uploadMultipleImages } from "../middlewares/uploadImageMiddleware.js";
+
 import ProductModel from "../models/productModel.js";
 import {
   deleteOne,
@@ -12,8 +12,25 @@ import {
   getAll,
 } from "./handlersFactory.js"; // Updated import
 
-// Middleware to upload product media images
-export const uploadProductMediaImages = uploadMultipleImages([
+// configure multer storage
+const multerStorage = multer.memoryStorage(); // Use memory storage
+
+// Check if the uploaded file is an image
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image")) {
+    cb(null, true);
+  } else {
+    cb(new ApiError("Please upload only images", 400), false);
+  }
+};
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+
+// Middleware to upload a single image product
+export const uploadSingleProductImage = upload.fields([
   { name: "imageCover", maxCount: 1 },
   { name: "images", maxCount: 3 },
 ]);
@@ -31,6 +48,8 @@ export const resizeProductImage = async (req, res, next) => {
     .toFile(`public/images/products/${imageCoverFilename}`);
 
   req.body.imageCover = imageCoverFilename;
+  console.log("===>", req.body.imageCover);
+  console.log("===>", imageCoverFilename);
 
   // 2) Images using uuid and map
   // check if there are images
