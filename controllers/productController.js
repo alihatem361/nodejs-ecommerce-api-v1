@@ -73,6 +73,12 @@ export const resizeProductImage = async (req, res, next) => {
   next();
 };
 
+// Export the uploadProductMediaImages function
+export const uploadProductMediaImages = [
+  uploadSingleProductImage,
+  resizeProductImage,
+];
+
 // ------------------- Create Product -------------------
 // Method: POST
 // Path: /api/v1/products
